@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="icon" href="img/logo-mark-1a.ico" type="image/x-icon">
+    <title>Hackathon | Ryzen ENCGO Club</title>
+    
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css">
+    <style>
+        @font-face {
+            font-family: 'VCR OSD Mono';
+            src: url('./static/VCR_OSD_MONO.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "VCR OSD MONO";
+            background-color: #121212;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+        .container-fluid {
+            height: 100vh;
+            display: flex;
+            background: url('./static/img/hackathon.jpg') no-repeat center center;
+            background-size: cover;
+        }
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+        }
+        .sidebar {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 10px;
+            width: 12%;
+            min-width: 250px;
+            overflow-y: auto;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+        }
+        .sidebar h3 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            color: #ff5722;
+        }
+        .sidebar a {
+            color: #ffffff;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .sidebar a:hover {
+            background-color: #ff5722;
+        }
+        .content {
+            margin-left: 19%;
+            padding: 40px;
+            background-color: rgba(0, 0, 0, 0.8);
+            height: 100vh;
+            width: 40%;
+            overflow-y: auto;
+            position: relative;
+        }
+        .editor-container {
+            width: 40%;
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            padding: 40px;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        .content h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #ff5722;
+        }
+        .code-block {
+            background-color: #1e1e1e;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            color: #ffffff;
+            white-space: pre-wrap; /* This will force long lines to wrap to the next line */
+            word-wrap: break-word; /* This will break long words onto the next line if necessary */
+        }
+        .CodeMirror {
+            background-color: #1e1e1e;
+            color: #ffffff;
+            height: 400px;
+        }
+        .submit-btn {
+            margin-top: 20px;
+            width: 100%;
+            background-color: #ff5722;
+            color: #ffffff;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+        .submit-btn:hover {
+            background-color: #e64a19;
+        }
+        #language-selector {
+            margin-bottom: 20px;
+            background-color: #1e1e1e;
+            color: #ffffff;
+            border: 1px solid #444;
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    <div class="container-fluid d-flex">
+        <!-- Sidebar Section -->
+        <div class="sidebar">
+            <h3>Problems</h3>
+            <div id="problems-list">
+                <!-- Problems will be dynamically inserted here -->
+            </div>
+        </div>
+
+        <!-- Main Content Section -->
+        <div class="content">
+            <div id="problem-content">
+                <h2>Welcome to the Hackathon!</h2>
+                <p>Select a problem from the sidebar to get started.</p>
+            </div>
+        </div>
+
+        <div class="editor-container">
+            <h3>Code Editor</h3>
+            
+            <!-- Language Selector -->
+            <select id="language-selector" class="form-select" onchange="changeLanguageMode()">
+                <option value="javascript">JavaScript</option>
+                <option value="python">Python</option>
+                <option value="text/x-csrc">C</option>
+                <option value="text/x-c++src">C++</option>
+                <option value="text/x-java">Java</option>
+                <option value="go">Go</option>
+            </select>
+            
+            <textarea id="code-editor"></textarea>
+            <button class="submit-btn" onclick="submitCode()">Submit Code</button>
+        </div>
+
+   <!-- CodeMirror CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/material-darker.min.css">
+
+<!-- CodeMirror JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/javascript/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/go/go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/closebrackets.min.js"></script>
+<script>
+    // Initialize the CodeMirror editor
+    let editor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
+        lineNumbers: true,
+        mode: "javascript",  // Default mode
+        theme: "material-darker",
+        matchBrackets: true, // Enable bracket matching
+        autoCloseBrackets: true // Enable auto-closing brackets
+    });
+
+    // Function to change the editor's mode based on the selected language
+    function changeLanguageMode() {
+        const language = document.getElementById('language-selector').value;
+        
+        let mode = "javascript";  // Default to JavaScript
+        switch(language) {
+            case "python":
+                mode = "python";
+                break;
+            case "text/x-csrc":
+                mode = "text/x-csrc";  // C language mode
+                break;
+            case "text/x-c++src":
+                mode = "text/x-c++src";  // C++ language mode
+                break;
+            case "text/x-java":
+                mode = "text/x-java";  // Java language mode
+                break;
+            case "go":
+                mode = "go";  // Go language mode
+                break;
+        }
+        
+        editor.setOption("mode", mode);
+    }
+
+    // Save editor content to localStorage before page unload
+    window.addEventListener('beforeunload', function() {
+        localStorage.setItem('editorContent', editor.getValue());
+        localStorage.setItem('editorMode', editor.getOption('mode'));
+    });
+
+    // Restore editor content from localStorage on page load
+    window.addEventListener('load', function() {
+        const savedContent = localStorage.getItem('editorContent');
+        const savedMode = localStorage.getItem('editorMode');
+
+        if (savedContent) {
+            editor.setValue(savedContent);
+        }
+
+        if (savedMode) {
+            editor.setOption('mode', savedMode);
+            document.getElementById('language-selector').value = savedMode;
+        }
+    });
+
+    function displayProblem(problem) {
+        const problemContent = `
+            <h2>${problem.problem_name}</h2>
+            <p>${problem.problem_description}</p>
+            <h4>Expected Function:</h4>
+            <pre class="code-block">${problem.expected_function}</pre>
+            <h4>Expected Test:</h4>
+            <pre class="code-block">${problem.expected_test}</pre>
+            <h4>Expected Output:</h4>
+            <pre class="code-block">${problem.expected_output}</pre>
+        `;
+        document.getElementById('problem-content').innerHTML = problemContent;
+    }
+
+    function fetchProblems() {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', 'http://localhost:8081/problems', true);
+        xhr.onload = function() {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                const data = JSON.parse(xhr.responseText);
+                const problemsList = document.getElementById('problems-list');
+                problemsList.innerHTML = '';
+                data.forEach(problem => {
+                    const problemItem = document.createElement('a');
+                    problemItem.href = '#';
+                    problemItem.textContent = problem.problem_name;
+                    problemItem.onclick = () => {
+                        displayProblem(problem);
+                    };
+                    problemsList.appendChild(problemItem);
+                });
+            } else {
+                console.error('Error fetching problems:', xhr.statusText);
+            }
+        };
+        xhr.onerror = function() {
+            console.error('Error fetching problems:', xhr.statusText);
+        };
+        xhr.send();
+    }
+
+    function submitCode() {
+        const code = editor.getValue();
+        const problemName = document.querySelector('#problem-content h2').textContent;
+        // Implement your submission logic here
+    }
+
+    // Refresh the problems list every 30 seconds
+    setInterval(function() {
+        fetchProblems(); // Fetch updated problems list
+    }, 5000); // 30000 milliseconds = 30 seconds
+</script>
+</body>
+</html>
